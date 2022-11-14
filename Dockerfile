@@ -1,6 +1,7 @@
 FROM ubuntu
 ENV YOURDOMAIN=localhost
-
+COPY ./hello.sh ./
+RUN bash ./hello.sh
 RUN \
   
   apt-get update && \
@@ -11,7 +12,6 @@ RUN \
   rm -rf /var/lib/apt/lists/* && \
   echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
   chown -R www-data:www-data /var/lib/nginx
-
 
 COPY . /Telegram
 WORKDIR /Telegram
