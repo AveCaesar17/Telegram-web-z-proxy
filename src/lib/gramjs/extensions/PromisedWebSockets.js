@@ -66,8 +66,53 @@ class PromisedWebSockets {
     }
 
     getWebSocketLink(ip, port, testServers, isPremium) {
+    let zws2 = 'zws2.web.telegram.org';
+    let zws1 = 'zws1.web.telegram.org';
+    let zws2_1 = 'zws2-1.web.telegram.org';
+    let zws1_1 = 'zws1-1.web.telegram.org';
+    let zws4 = 'zws4.web.telegram.org';
+    let zws4_1 = 'zws4-1.web.telegram.org';
+    let zws3 = 'zws3.web.telegram.org';
+    let zws5 = 'zws5.web.telegram.org';
         if (port === 443) {
+               if (ip === zws2) {
+              return `wss://domain:443/app1${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+    //        return `wss://${ip}:${port}/apiws${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+               if (ip === zws1) {
+                 return `wss://domain:443/update${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+               if (ip === zws2_1) {
+                 return `wss://domain:443/reload${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+               if (ip === zws1_1) {
+                 return `wss://domain:443/test${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+               if (ip === zws4) {
+                 return `wss://domain:443/get${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+               if (ip === zws4_1) {
+                 return `wss://domain:443/create${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+               if (ip === zws3) {
+                 return `wss://domain:443/delete${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+
+               if (ip === zws5) {
+                 return `wss://domain:443/push${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
+               }
+
+
             return `wss://${ip}:${port}/apiws${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
+
         } else {
             return `ws://${ip}:${port}/apiws${testServers ? '_test' : ''}${isPremium ? '_premium' : ''}`;
         }

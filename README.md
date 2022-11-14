@@ -39,3 +39,12 @@ await invoke(new GramJs.help.GetAppConfig())
 
 ## Bug reports and Suggestions
 If you find an issue with this app, let Telegram know using the [Suggestions Platform](https://bugs.telegram.org/c/4002).
+
+## Build docker 
+```sh
+docker build . -t proxytg
+```
+```sh
+docker run -p 443:8443 -e YOURDOMAIN=<yourdomain.com> proxytg
+```
+-e
