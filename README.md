@@ -37,7 +37,7 @@ build docker image:
 ```sh
 docker build . -t proxytg
 ```
-run docker container:
+Run docker container:
 ```sh
 docker run -p 443:8443 -e YOURDOMAIN=<yourdomain.com> proxytg
 ```
