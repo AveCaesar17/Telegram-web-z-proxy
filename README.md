@@ -33,7 +33,8 @@ If you find an issue with this app, let Telegram know using the [Suggestions Pla
 
 ## Build docker 
 Put your certificate(cert.crt) and key(cert.key) to the root of the repository
-build docker image:
+
+Build docker image:
 ```sh
 docker build . -t proxytg
 ```
