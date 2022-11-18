@@ -45,7 +45,9 @@ docker run -p 443:8443 -e YOURDOMAIN=<yourdomain.com> proxytg
 ```
 ## Run Ansible role
 Put your certificate(cert.crt) and key(cert.key) to the directory ansible/files
+
 Fill in the variables in the file: ansible/vars/main.yaml
+
 In the directory ansible/, run:
 ```sh
 ansible-playbook install_proxy.yml -i inventory 
