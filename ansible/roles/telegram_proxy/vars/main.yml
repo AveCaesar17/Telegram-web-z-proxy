@@ -1,0 +1,8 @@
+---
+# vars file for Telegram-z-proxy
+domain_proxy: example.com
+basic_auth: true
+user: example
+password: example 
+TgApiId: 
+TgApiHash: 

@@ -1,0 +1,114 @@
+---
+# tasks file for Telegram-z-proxy
+- block: #Block for RedHat
+    - name: install nginx
+      yum:
+        name: nginx
+        state: latest
+      vars:
+        ansible_become: yes
+  when: ansible_os_family == "RedHat"
+- block: #Block for RedHat
+    - name: install nginx
+      apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      with_items: 
+       - nginx
+       - nodejs
+       - git
+       - npm
+      vars:
+        ansible_become: yes
+  when: ansible_os_family == "Debian"
+
+- name: Download code Telegram-z from github 
+  git:
+   repo: https://github.com/TelegramOrg/Telegram-web-z.git
+   dest: /home/{{ ansible_user }}/Telegram-web-z
+   force: yes
+  vars:
+    ansible_become: yes
+ 
+
+- name: create path 
+  template:
+   src: "{{ item.src }}"
+   dest: "{{ item.dest }}"
+  loop:
+    - { 
+       src: 'TelegramClient.js.j2' ,
+       dest: '/home/{{ ansible_user }}/Telegram-web-z/src/lib/gramjs/client/TelegramClient.js'
+      }
+    - {
+       src: 'PromisedWebSockets.js.j2' ,
+       dest: '/home/{{ ansible_user }}/Telegram-web-z/src/lib/gramjs/extensions/PromisedWebSockets.js'
+      }
+    - {
+       src: 'nginx.conf.j2' ,
+       dest: '/etc/nginx/nginx.conf'
+      }
+    - {
+       src: 'websync.ts.j2' ,
+       dest: '/home/{{ ansible_user }}/Telegram-web-z/src/util/websync.ts'
+      }
+    - {
+       src: '.env.j2' ,
+       dest: '/home/{{ ansible_user }}/Telegram-web-z/.env'
+      }
+    - {
+       src: '.babelrc.j2' ,
+       dest: '/home/{{ ansible_user }}/Telegram-web-z/.babelrc'
+      }
+- name: copy certs
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/nginx/{{ item }}"
+  loop: 
+   - "cert.crt"
+   - "cert.key"
+
+- name: install htpasswd 
+  apt:
+    name: apache2-utils
+    state: latest
+    update_cache: yes
+  vars:
+    ansible_become: yes
+  when: ansible_os_family == "Debian"
+- name: install htpasswd 
+  yum:
+    name: httpd-tools
+    state: latest
+  vars:
+    ansible_become: yes
+  when: ansible_os_family == "RedHat"
+- name: setup password 
+  shell: 
+    cmd: htpasswd -b -c /etc/nginx/.htpasswd {{ user }} {{ password }}
+  vars:
+    ansible_become: yes
+  when: basic_auth == true
+- name: copy build scrypt
+  copy:
+    src: build.sh
+    dest: '/home/{{ ansible_user }}/Telegram-web-z/build.sh'
+- name: build 
+  shell:
+    cmd: "{{ item }}"
+    chdir: /home/{{ ansible_user }}/Telegram-web-z/
+  loop:
+    - 'npm i'
+    - 'npm run gramjs:tl full'
+    - 'npx browserslist@latest --update-db'
+    - 'npm run build:production'
+- name: start nginx
+  systemd:
+    state: restarted
+    name: nginx
+    enabled: yes
+  
+
+
+   
