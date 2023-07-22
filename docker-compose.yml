@@ -1,0 +1,58 @@
+version: "3"
+services:
+  nginx:
+    build:
+      context: ./waf
+      dockerfile: ./alpine-nginx.dockerfile
+    environment:
+      - servername=avecaesar.ru
+    container_name: nginx
+    restart: "always"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - letsencrypt_cert:/etc/letsencrypt
+      - letsencrypt_data:/var/www/certbot
+    networks:
+
+      custom_network:
+        ipv4_address: 10.5.0.2
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    restart: "always"
+    volumes:
+      - letsencrypt_cert:/etc/letsencrypt
+      - letsencrypt_data:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew && chown -R 1001:1001 /etc/letsencrypt; sleep 12h & wait $${!}; done;'"
+    networks:
+      custom_network:
+        ipv4_address: 10.5.0.6
+
+  telegram:
+    build:
+      context: ./
+      dockerfile: telegram.dockerfile
+    container_name: telegram
+    restart: "always"
+    environment:
+      - YOURDOMAIN=avecaesar.ru
+    networks:
+      custom_network:
+        ipv4_address: 10.5.0.3
+
+
+
+volumes:
+
+  letsencrypt_cert:
+  letsencrypt_data:
+
+networks:
+  custom_network:
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+
